@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login / Sign Up — FIFA World Cup Live Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    /* ============================================================
+       AUTH PAGE STYLES
+       All styles are self-contained in this file so the page
+       works independently — no need to import style.css.
+    ============================================================ */
+
+    /* CSS Variables — same palette as the main site */
+    :root {
+      --green-dark:  #0a3d0a;
+      --green-mid:   #16711e;
+      --green-neon:  #39ff14;
+      --green-light: #4caf50;
+      --white:       #ffffff;
+      --black:       #0d0d0d;
+      --dark-bg:     #0a130a;
+      --card-bg:     #111d11;
+      --card-border: #1e3a1e;
+      --gold:        #ffd700;
+      --red:         #ff3131;
+      --text-muted:  #7a9a7a;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body:    'Outfit', sans-serif;
+    }
+
+    /* Reset */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--dark-bg);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ---- TOP NAV ---- */
+    .top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 2rem;
+      background: rgba(10,19,10,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(57,255,20,0.15);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .back-home {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-home:hover { color: var(--green-neon); }
+
+    /* ---- PAGE LAYOUT: two-column split ---- */
+    .auth-page {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    /* ---- LEFT PANEL: Football photo + quote ---- */
+    .auth-left {
+      position: relative;
+      overflow: hidden;
+      /* Real football stadium photo */
+      background-image: url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=1200&q=90');
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* Dark overlay so text is readable */
+    .auth-left-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(0,0,0,0.75) 0%,
+        rgba(10,50,10,0.6) 100%
+      );
+    }
+
+    /* Pitch lines pattern on top of the photo */
+    .auth-left-pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 50% 50%,
+          transparent 18%,
+          rgba(255,255,255,0.04) 18.5%,
+          transparent 19%),
+        linear-gradient(to bottom,
+          transparent 49.5%,
+          rgba(255,255,255,0.06) 49.5%,
+          rgba(255,255,255,0.06) 50.5%,
+          transparent 50.5%);
+    }
+
+    .auth-left-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      padding: 5rem 3rem;
+    }
+
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--green-neon);
+      background: rgba(57,255,20,0.1);
+      border: 1px solid rgba(57,255,20,0.3);
+      padding: 0.35rem 1rem;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+      width: fit-content;
+    }
+
+    .auth-left-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1;
+      letter-spacing: 3px;
+      color: var(--white);
+      margin-bottom: 1.2rem;
+    }
+
+    .auth-left-title span {
+      color: var(--green-neon);
+      text-shadow: 0 0 30px rgba(57,255,20,0.5);
+    }
+
+    .auth-left-desc {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.7;
+      max-width: 380px;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Feature pill list */
+    .auth-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .auth-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .feature-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(57,255,20,0.15);
+      border: 1px solid rgba(57,255,20,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* Stats strip at the bottom of left panel */
+    .auth-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .auth-stat span:first-child {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--green-neon);
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+
+    .auth-stat span:last-child {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+    }
+
+    /* ---- RIGHT PANEL: Form ---- */
+    .auth-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 5rem 3rem;
+      background: var(--card-bg);
+      overflow-y: auto;
+    }
+
+    .auth-form-box {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .auth-form-box h2 {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      letter-spacing: 3px;
+      margin-bottom: 0.3rem;
+    }
+
+    .auth-form-box p.sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    /* ---- Tab switcher: LOGIN / SIGN UP ---- */
+    .auth-tabs {
+      display: flex;
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 2rem;
+      border: 1px solid var(--card-border);
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 0.65rem;
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      cursor: pointer;
+      border-radius: 7px;
+      transition: all 0.25s ease;
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      font-family: var(--font-body);
+    }
+
+    .auth-tab.active {
+      background: var(--green-neon);
+      color: var(--black);
+    }
+
+    /* ---- Form panels — only one visible at a time ---- */
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+
+    /* ---- Input group ---- */
+    .input-group {
+      position: relative;
+      margin-bottom: 1.2rem;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .input-group .input-wrap {
+      position: relative;
+    }
+
+    /* Icon inside the input field */
+    .input-group .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.8rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      outline: none;
+    }
+
+    .input-group input:focus {
+      border-color: var(--green-neon);
+      box-shadow: 0 0 0 3px rgba(57,255,20,0.1);
+    }
+
+    .input-group input::placeholder {
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* Toggle password visibility button */
+    .eye-btn {
+      position: absolute;
+      right: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0.2rem;
+    }
+
+    .eye-btn:hover { color: var(--green-neon); }
+
+    /* Two inputs side by side */
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* Favourite team selector */
+    .input-group select {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.8rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.25s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .input-group select:focus {
+      border-color: var(--green-neon);
+    }
+
+    .input-group select option {
+      background: var(--card-bg);
+      color: var(--white);
+    }
+
+    /* Checkbox style */
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 16px; height: 16px;
+      margin-top: 2px;
+      accent-color: var(--green-neon);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .checkbox-group a {
+      color: var(--green-neon);
+      text-decoration: none;
+    }
+
+    .checkbox-group a:hover { text-decoration: underline; }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 0.95rem;
+      background: var(--green-neon);
+      color: var(--black);
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .submit-btn:hover {
+      background: #2dcc0f;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(57,255,20,0.35);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Divider with "or" text */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--card-border);
+    }
+
+    /* Social login buttons (Google / Apple) */
+    .social-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--white);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s;
+      font-family: var(--font-body);
+    }
+
+    .social-btn:hover {
+      border-color: var(--green-neon);
+      background: rgba(57,255,20,0.05);
+    }
+
+    /* Forgot password link */
+    .forgot-link {
+      text-align: right;
+      margin-top: -0.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .forgot-link a {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .forgot-link a:hover { color: var(--green-neon); }
+
+    /* Password strength bar */
+    .strength-bar-wrap {
+      margin-top: 0.4rem;
+    }
+
+    .strength-bar-track {
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .strength-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 2px;
+      transition: width 0.4s, background 0.4s;
+    }
+
+    .strength-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    /* Success / Error toast notification */
+    .toast {
+      display: none;
+      position: fixed;
+      top: 5rem; right: 1.5rem;
+      z-index: 9999;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      min-width: 260px;
+      animation: slide-in-right 0.4s ease;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+
+    .toast.success {
+      background: var(--green-mid);
+      border: 1px solid var(--green-neon);
+      color: var(--white);
+    }
+
+    .toast.error {
+      background: #3d0a0a;
+      border: 1px solid var(--red);
+      color: var(--white);
+    }
+
+    @keyframes slide-in-right {
+      from { transform: translateX(120%); opacity: 0; }
+      to   { transform: translateX(0);   opacity: 1; }
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .auth-page { grid-template-columns: 1fr; }
+      .auth-left  { display: none; } /* Hide photo on mobile */
+      .auth-right { padding: 5rem 1.5rem 2rem; }
+      .input-row  { grid-template-columns: 1fr; }
+      .social-btns { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ---- TOP NAVIGATION ---- -->
+  <nav class="top-nav">
+    <a href="index.html" class="nav-logo">
+      <span>⚽</span> WC Live Hub
+    </a>
+    <a href="index.html" class="back-home">
+      <i class="fa fa-arrow-left"></i> Back to Home
+    </a>
+  </nav>
+
+  <!-- ---- TOAST NOTIFICATION ---- -->
+  <!-- This appears in the corner when login/signup succeeds or fails -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ============================================================
+       MAIN AUTH PAGE — Two-column layout
+  ============================================================ -->
+  <div class="auth-page">
+
+    <!-- ======== LEFT PANEL: Pitch photo + info ======== -->
+    <div class="auth-left">
+      <div class="auth-left-overlay"></div>
+      <div class="auth-left-pattern"></div>
+
+      <div class="auth-left-content">
+        <span class="auth-badge">🏆 FIFA WORLD CUP 2026</span>
+
+        <h1 class="auth-left-title">
+          Join The<br/>
+          <span>Ultimate</span><br/>
+          Football Hub
+        </h1>
+
+        <p class="auth-left-desc">
+          Get access to live scores, real-time match updates,
+          player stats, and exclusive World Cup content — all in one place.
+        </p>
+
+        <!-- Feature list -->
+        <div class="auth-features">
+          <div class="auth-feature">
+            <div class="feature-icon">🔴</div>
+            <span>Live match scores and minute-by-minute commentary</span>
+          </div>
+          <div class="auth-feature">
+            <div class="feature-icon">⭐</div>
+            <span>Track your favourite players and teams</span>
+          </div>
+          <div class="auth-feature">
+            <div class="feature-icon">📅</div>
+            <span>Match schedule with real-time countdown timers</span>
+          </div>
+          <div class="auth-feature">
+            <div class="feature-icon">📺</div>
+            <span>Direct links to official live streams</span>
+          </div>
+        </div>
+
+        <!-- Stat strip -->
+        <div class="auth-stats">
+          <div class="auth-stat">
+            <span>32</span><span>Teams</span>
+          </div>
+          <div class="auth-stat">
+            <span>64</span><span>Matches</span>
+          </div>
+          <div class="auth-stat">
+            <span>1B+</span><span>Fans</span>
+          </div>
+          <div class="auth-stat">
+            <span>3</span><span>Host Nations</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======== RIGHT PANEL: Login / Signup form ======== -->
+    <div class="auth-right">
+      <div class="auth-form-box">
+
+        <h2 id="formTitle">Welcome Back</h2>
+        <p class="sub" id="formSub">Sign in to continue to WC Live Hub</p>
+
+        <!-- Tab switcher -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="loginTab" onclick="switchTab('login')">
+            Login
+          </button>
+          <button class="auth-tab" id="signupTab" onclick="switchTab('signup')">
+            Sign Up
+          </button>
+        </div>
+
+        <!-- ============ LOGIN FORM ============ -->
+        <div class="form-panel active" id="loginPanel">
+
+          <!-- Social login buttons -->
+          <div class="social-btns">
+            <button class="social-btn" onclick="socialLogin('Google')">
+              <i class="fab fa-google" style="color:#EA4335"></i> Google
+            </button>
+            <button class="social-btn" onclick="socialLogin('Facebook')">
+              <i class="fab fa-facebook-f" style="color:#1877F2"></i> Facebook
+            </button>
+          </div>
+
+          <div class="divider">or sign in with email</div>
+
+          <!-- Email -->
+          <div class="input-group">
+            <label>Email Address</label>
+            <div class="input-wrap">
+              <i class="fa fa-envelope input-icon"></i>
+              <input type="email" id="loginEmail"
+                     placeholder="you@example.com"
+                     autocomplete="email"/>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="input-group">
+            <label>Password</label>
+            <div class="input-wrap">
+              <i class="fa fa-lock input-icon"></i>
+              <input type="password" id="loginPassword"
+                     placeholder="Enter your password"
+                     autocomplete="current-password"/>
+              <button class="eye-btn" onclick="togglePassword('loginPassword', this)" type="button">
+                <i class="fa fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Forgot password -->
+          <div class="forgot-link">
+            <a href="#" onclick="showToast('Password reset link sent to your email!', 'success'); return false;">
+              Forgot password?
+            </a>
+          </div>
+
+          <!-- Submit -->
+          <button class="submit-btn" onclick="handleLogin()">
+            <i class="fa fa-sign-in-alt"></i> Sign In
+          </button>
+
+          <p style="text-align:center; margin-top:1.5rem; font-size:0.82rem; color:var(--text-muted)">
+            Don't have an account?
+            <a href="#" onclick="switchTab('signup'); return false;"
+               style="color:var(--green-neon); text-decoration:none; font-weight:600">
+              Sign up free
+            </a>
+          </p>
+        </div>
+        <!-- END LOGIN FORM -->
+
+        <!-- ============ SIGNUP FORM ============ -->
+        <div class="form-panel" id="signupPanel">
+
+          <!-- Social signup -->
+          <div class="social-btns">
+            <button class="social-btn" onclick="socialLogin('Google')">
+              <i class="fab fa-google" style="color:#EA4335"></i> Google
+            </button>
+            <button class="social-btn" onclick="socialLogin('Facebook')">
+              <i class="fab fa-facebook-f" style="color:#1877F2"></i> Facebook
+            </button>
+          </div>
+
+          <div class="divider">or create with email</div>
+
+          <!-- First Name + Last Name (side by side) -->
+          <div class="input-row">
+            <div class="input-group">
+              <label>First Name</label>
+              <div class="input-wrap">
+                <i class="fa fa-user input-icon"></i>
+                <input type="text" id="firstName" placeholder="John"/>
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Last Name</label>
+              <div class="input-wrap">
+                <i class="fa fa-user input-icon"></i>
+                <input type="text" id="lastName" placeholder="Doe"/>
+              </div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="input-group">
+            <label>Email Address</label>
+            <div class="input-wrap">
+              <i class="fa fa-envelope input-icon"></i>
+              <input type="email" id="signupEmail"
+                     placeholder="you@example.com"
+                     autocomplete="email"/>
+            </div>
+          </div>
+
+          <!-- Favourite Team dropdown -->
+          <div class="input-group">
+            <label>Favourite Team</label>
+            <div class="input-wrap">
+              <i class="fa fa-futbol input-icon"></i>
+              <select id="favTeam">
+                <option value="">Select your team...</option>
+                <option>🇧🇷 Brazil</option>
+                <option>🇦🇷 Argentina</option>
+                <option>🇫🇷 France</option>
+                <option>🇩🇪 Germany</option>
+                <option>🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+                <option>🇪🇸 Spain</option>
+                <option>🇵🇹 Portugal</option>
+                <option>🇮🇹 Italy</option>
+                <option>🇳🇱 Netherlands</option>
+                <option>🇺🇸 USA</option>
+                <option>🇯🇵 Japan</option>
+                <option>🇲🇦 Morocco</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="input-group">
+            <label>Password</label>
+            <div class="input-wrap">
+              <i class="fa fa-lock input-icon"></i>
+              <input type="password" id="signupPassword"
+                     placeholder="Create a strong password"
+                     oninput="checkStrength(this.value)"
+                     autocomplete="new-password"/>
+              <button class="eye-btn" onclick="togglePassword('signupPassword', this)" type="button">
+                <i class="fa fa-eye"></i>
+              </button>
+            </div>
+            <!-- Password strength indicator -->
+            <div class="strength-bar-wrap">
+              <div class="strength-bar-track">
+                <div class="strength-bar-fill" id="strengthFill"></div>
+              </div>
+              <div class="strength-label" id="strengthLabel">Enter a password</div>
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="input-group">
+            <label>Confirm Password</label>
+            <div class="input-wrap">
+              <i class="fa fa-lock input-icon"></i>
+              <input type="password" id="confirmPassword"
+                     placeholder="Re-enter your password"
+                     autocomplete="new-password"/>
+              <button class="eye-btn" onclick="togglePassword('confirmPassword', this)" type="button">
+                <i class="fa fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Terms & conditions checkbox -->
+          <div class="checkbox-group">
+            <input type="checkbox" id="termsCheck"/>
+            <label for="termsCheck">
+              I agree to the
+              <a href="#" onclick="return false;">Terms of Service</a> and
+              <a href="#" onclick="return false;">Privacy Policy</a>
+            </label>
+          </div>
+
+          <!-- Submit -->
+          <button class="submit-btn" onclick="handleSignup()">
+            <i class="fa fa-user-plus"></i> Create Account
+          </button>
+
+          <p style="text-align:center; margin-top:1.5rem; font-size:0.82rem; color:var(--text-muted)">
+            Already have an account?
+            <a href="#" onclick="switchTab('login'); return false;"
+               style="color:var(--green-neon); text-decoration:none; font-weight:600">
+              Sign in
+            </a>
+          </p>
+        </div>
+        <!-- END SIGNUP FORM -->
+
+      </div>
+    </div>
+    <!-- END RIGHT PANEL -->
+
+  </div>
+  <!-- END AUTH PAGE -->
+
+  <!-- ============================================================
+       JAVASCRIPT FOR AUTH PAGE
+  ============================================================ -->
+  <script>
+
+    // ============================================================
+    // TAB SWITCHER — toggle between Login and Sign Up panels
+    // ============================================================
+    function switchTab(tab) {
+      const loginTab    = document.getElementById("loginTab");
+      const signupTab   = document.getElementById("signupTab");
+      const loginPanel  = document.getElementById("loginPanel");
+      const signupPanel = document.getElementById("signupPanel");
+      const formTitle   = document.getElementById("formTitle");
+      const formSub     = document.getElementById("formSub");
+
+      if (tab === "login") {
+        // Activate Login tab
+        loginTab.classList.add("active");
+        signupTab.classList.remove("active");
+        loginPanel.classList.add("active");
+        signupPanel.classList.remove("active");
+        formTitle.innerText = "Welcome Back";
+        formSub.innerText   = "Sign in to continue to WC Live Hub";
+
+      } else {
+        // Activate Sign Up tab
+        signupTab.classList.add("active");
+        loginTab.classList.remove("active");
+        signupPanel.classList.add("active");
+        loginPanel.classList.remove("active");
+        formTitle.innerText = "Create Account";
+        formSub.innerText   = "Join millions of football fans worldwide";
+      }
+    }
+
+
+    // ============================================================
+    // SHOW TOAST — small notification popup in the corner
+    // type: "success" (green) or "error" (red)
+    // ============================================================
+    function showToast(message, type) {
+      const toast = document.getElementById("toast");
+      toast.textContent = (type === "success" ? "✅ " : "❌ ") + message;
+      toast.className   = "toast " + type;
+      toast.style.display = "block";
+
+      // Auto-hide after 3.5 seconds
+      setTimeout(function () {
+        toast.style.display = "none";
+      }, 3500);
+    }
+
+
+    // ============================================================
+    // TOGGLE PASSWORD VISIBILITY
+    // ============================================================
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon  = btn.querySelector("i");
+
+      if (input.type === "password") {
+        input.type = "text";       // Show password
+        icon.className = "fa fa-eye-slash";
+      } else {
+        input.type = "password";   // Hide password
+        icon.className = "fa fa-eye";
+      }
+    }
+
+
+    // ============================================================
+    // PASSWORD STRENGTH CHECKER
+    // Checks length, numbers, uppercase, special characters
+    // ============================================================
+    function checkStrength(password) {
+      const fill  = document.getElementById("strengthFill");
+      const label = document.getElementById("strengthLabel");
+
+      let score = 0;
+
+      if (password.length >= 8)                        score++; // Length
+      if (/[A-Z]/.test(password))                      score++; // Uppercase
+      if (/[0-9]/.test(password))                      score++; // Numbers
+      if (/[^A-Za-z0-9]/.test(password))               score++; // Special chars
+
+      // Map score to visual feedback
+      const levels = [
+        { width: "0%",   color: "transparent", text: "Enter a password" },
+        { width: "25%",  color: "#ff3131",      text: "Weak — too short" },
+        { width: "50%",  color: "#ff9900",      text: "Fair — add numbers" },
+        { width: "75%",  color: "#ffd700",      text: "Good — add symbols" },
+        { width: "100%", color: "#39ff14",      text: "Strong ✓" }
+      ];
+
+      const level = password.length === 0 ? 0 : score;
+      fill.style.width      = levels[level].width;
+      fill.style.background = levels[level].color;
+      label.textContent     = levels[level].text;
+      label.style.color     = levels[level].color;
+    }
+
+
+    // ============================================================
+    // HANDLE LOGIN — validates form and redirects on success
+    // ============================================================
+    function handleLogin() {
+      const email    = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      // Basic validation — check fields are not empty
+      if (!email || !password) {
+        showToast("Please fill in all fields.", "error");
+        return;
+      }
+
+      // Check valid email format using a simple regex pattern
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showToast("Please enter a valid email address.", "error");
+        return;
+      }
+
+      if (password.length < 6) {
+        showToast("Password must be at least 6 characters.", "error");
+        return;
+      }
+
+      // ---- Success! ----
+      // In a real project this would call an API/backend.
+      // Here we simulate it by saving to localStorage and redirecting.
+      localStorage.setItem("wc_user_email", email);
+      localStorage.setItem("wc_logged_in", "true");
+
+      showToast("Login successful! Redirecting...", "success");
+
+      // Redirect to main page after 1.5 seconds
+      setTimeout(function () {
+        window.location.href = "index.html";
+      }, 1500);
+    }
+
+
+    // ============================================================
+    // HANDLE SIGNUP — validates all fields
+    // ============================================================
+    function handleSignup() {
+      const firstName = document.getElementById("firstName").value.trim();
+      const lastName  = document.getElementById("lastName").value.trim();
+      const email     = document.getElementById("signupEmail").value.trim();
+      const password  = document.getElementById("signupPassword").value;
+      const confirm   = document.getElementById("confirmPassword").value;
+      const terms     = document.getElementById("termsCheck").checked;
+
+      // Check all fields are filled
+      if (!firstName || !lastName || !email || !password || !confirm) {
+        showToast("Please fill in all fields.", "error");
+        return;
+      }
+
+      // Valid email check
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showToast("Please enter a valid email address.", "error");
+        return;
+      }
+
+      // Password minimum length
+      if (password.length < 8) {
+        showToast("Password must be at least 8 characters.", "error");
+        return;
+      }
+
+      // Passwords must match
+      if (password !== confirm) {
+        showToast("Passwords do not match.", "error");
+        return;
+      }
+
+      // User must agree to terms
+      if (!terms) {
+        showToast("Please accept the Terms of Service.", "error");
+        return;
+      }
+
+      // ---- Success! ----
+      localStorage.setItem("wc_user_name",  firstName + " " + lastName);
+      localStorage.setItem("wc_user_email", email);
+      localStorage.setItem("wc_logged_in",  "true");
+
+      showToast("Account created! Welcome to WC Live Hub 🎉", "success");
+
+      setTimeout(function () {
+        window.location.href = "index.html";
+      }, 1800);
+    }
+
+
+    // ============================================================
+    // SOCIAL LOGIN (demo only)
+    // ============================================================
+    function socialLogin(provider) {
+      showToast("Connecting to " + provider + "...", "success");
+      setTimeout(function () {
+        localStorage.setItem("wc_logged_in", "true");
+        localStorage.setItem("wc_user_email", provider.toLowerCase() + "@demo.com");
+        window.location.href = "index.html";
+      }, 1500);
+    }
+
+
+    // ============================================================
+    // CHECK IF ALREADY LOGGED IN
+    // If the user visits login page while already logged in,
+    // redirect them straight to the homepage.
+    // ============================================================
+    if (localStorage.getItem("wc_logged_in") === "true") {
+      // Comment out this line if you want to always see the login page
+      // window.location.href = "index.html";
+    }
+
+  </script>
+</body>
+</html>

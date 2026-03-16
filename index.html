@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FIFA World Cup Live Hub</title>
+  <!-- Google Fonts: Bebas Neue for headings, Outfit for body text -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- ===================== NAVIGATION BAR ===================== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">
+      <span class="logo-icon">⚽</span>
+      <span class="logo-text">WC Live Hub</span>
+    </div>
+
+    <!-- Hamburger button for mobile -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home"      class="nav-link active">Home</a></li>
+      <li><a href="#matches"   class="nav-link">Matches</a></li>
+      <li><a href="#teams"     class="nav-link">Teams</a></li>
+      <li><a href="#players"   class="nav-link">Players</a></li>
+      <li><a href="#upcoming"  class="nav-link">Upcoming</a></li>
+      <li><a href="#watch"     class="nav-link watch-btn">▶ Watch Live</a></li>
+      <li><a href="#about"     class="nav-link">About</a></li>
+      <li><a href="login.html" class="nav-link login-btn" id="authBtn">Login / Sign Up</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===================== HERO SECTION ===================== -->
+  <section class="hero" id="home">
+    <!-- Dark overlay to make text readable over the photo -->
+    <div class="hero-photo-overlay"></div>
+    <!-- Animated pitch lines in background -->
+    <div class="pitch-overlay"></div>
+    <div class="hero-particles" id="particles"></div>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">🏆 FIFA WORLD CUP 2026 — USA · CANADA · MEXICO</p>
+      <h1 class="hero-title">FIFA World Cup<br/><span class="accent">Live Hub</span></h1>
+      <p class="hero-subtitle">Your ultimate destination for live scores, match updates,<br/>player stats, and everything football.</p>
+      <div class="hero-buttons">
+        <a href="#matches"  class="btn btn-primary">View Live Matches</a>
+        <a href="#upcoming" class="btn btn-outline">Upcoming Schedule</a>
+      </div>
+      <!-- Live clock displayed in hero -->
+      <div class="hero-clock">
+        <i class="fa fa-clock"></i>
+        <span id="heroClock"></span>
+      </div>
+    </div>
+
+    <!-- Scrolling ticker tape at bottom of hero -->
+    <div class="ticker-wrap">
+      <div class="ticker">
+        ⚽ BRA 2–1 ARG &nbsp;|&nbsp; 🔴 LIVE &nbsp;|&nbsp; FRA 0–0 ENG &nbsp;|&nbsp;
+        GER 3–2 ESP &nbsp;|&nbsp; POR 1–0 URU &nbsp;|&nbsp; USA 2–2 MEX &nbsp;|&nbsp;
+        ⚽ BRA 2–1 ARG &nbsp;|&nbsp; 🔴 LIVE &nbsp;|&nbsp; FRA 0–0 ENG &nbsp;|&nbsp;
+        GER 3–2 ESP &nbsp;|&nbsp; POR 1–0 URU &nbsp;|&nbsp; USA 2–2 MEX
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== LIVE MATCHES SECTION ===================== -->
+  <section class="section" id="matches">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">🔴 LIVE NOW</span>
+        <h2 class="section-title">Real-Time Matches</h2>
+        <p class="section-sub">Live scores update automatically. Current time: <strong id="matchClock"></strong></p>
+      </div>
+
+      <div class="match-grid" id="matchGrid">
+        <!-- Match cards are injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MATCH DETAIL MODAL ===================== -->
+  <!--
+    This modal pops up when a user clicks a match card.
+    It shows lineups, key players, and match history.
+  -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box" id="modalBox">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- ===================== UPCOMING MATCHES SECTION ===================== -->
+  <section class="section section-dark" id="upcoming">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">📅 SCHEDULE</span>
+        <h2 class="section-title">Upcoming Matches</h2>
+        <p class="section-sub">Countdown to kick-off for every upcoming fixture</p>
+      </div>
+      <div class="upcoming-grid" id="upcomingGrid">
+        <!-- Upcoming cards injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TEAMS SECTION ===================== -->
+  <section class="section" id="teams">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">🌍 NATIONS</span>
+        <h2 class="section-title">Competing Teams</h2>
+        <p class="section-sub">Meet the world's best national squads</p>
+      </div>
+      <div class="teams-grid" id="teamsGrid">
+        <!-- Team cards injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PLAYERS SECTION ===================== -->
+  <section class="section section-dark" id="players">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">⭐ STARS</span>
+        <h2 class="section-title">Featured Players</h2>
+        <p class="section-sub">The world's finest footballers on the biggest stage</p>
+      </div>
+
+      <!-- Filter buttons -->
+      <div class="player-filters" id="playerFilters">
+        <button class="filter-btn active" data-filter="all">All Players</button>
+        <button class="filter-btn" data-filter="forward">Forwards</button>
+        <button class="filter-btn" data-filter="midfielder">Midfielders</button>
+        <button class="filter-btn" data-filter="defender">Defenders</button>
+        <button class="filter-btn" data-filter="goalkeeper">Goalkeepers</button>
+      </div>
+
+      <div class="players-grid" id="playersGrid">
+        <!-- Player cards injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TOP SCORERS LEADERBOARD ===================== -->
+  <section class="section" id="scorers">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">🥇 GOLDEN BOOT</span>
+        <h2 class="section-title">Top Scorers</h2>
+        <p class="section-sub">Leading the race for the Golden Boot</p>
+      </div>
+      <div class="scorers-table-wrap">
+        <table class="scorers-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Player</th>
+              <th>Country</th>
+              <th>Goals</th>
+              <th>Assists</th>
+              <th>Matches</th>
+            </tr>
+          </thead>
+          <tbody id="scorersBody">
+            <!-- Rows injected by script.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WATCH LIVE SECTION ===================== -->
+  <section class="section watch-section" id="watch">
+    <div class="container">
+      <div class="watch-inner">
+        <div class="watch-text">
+          <span class="section-tag">📺 BROADCAST</span>
+          <h2 class="section-title" style="color:#fff">Watch It Live</h2>
+          <p style="color:rgba(255,255,255,0.8); font-size:1.1rem; max-width:480px;">
+            Stream every match in HD on the official FIFA platform.
+            Never miss a kick-off, goal, or trophy moment.
+          </p>
+          <div class="watch-buttons">
+            <a href="https://www.fifa.com" target="_blank" rel="noopener" class="btn btn-primary pulse-btn">
+              <i class="fa fa-play-circle"></i> &nbsp;Watch Official Match
+            </a>
+            <a href="https://www.youtube.com/@fifatv" target="_blank" rel="noopener" class="btn btn-outline" style="border-color:#fff;color:#fff">
+              <i class="fab fa-youtube"></i> &nbsp;FIFA YouTube
+            </a>
+          </div>
+        </div>
+        <div class="watch-visual">
+          <div class="tv-frame">
+            <div class="tv-screen">
+              <div class="tv-content">
+                <div class="live-dot"></div>
+                <span>LIVE</span>
+                <p>⚽ BRA 2 – 1 ARG</p>
+                <small>67' · Quarter Final</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PLAYER PHOTO GALLERY ===================== -->
+  <section class="section section-dark" id="gallery">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">📸 GALLERY</span>
+        <h2 class="section-title">Photo Gallery</h2>
+        <p class="section-sub">Iconic moments from the World Cup</p>
+      </div>
+      <div class="gallery-grid" id="galleryGrid">
+        <!-- Gallery items injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="logo-icon">⚽</span>
+          <span class="logo-text">WC Live Hub</span>
+          <p>A college case study project.<br/>Not affiliated with FIFA.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <a href="#home">Home</a>
+          <a href="#matches">Matches</a>
+          <a href="#teams">Teams</a>
+          <a href="#players">Players</a>
+          <a href="#upcoming">Schedule</a>
+        </div>
+        <div class="footer-links">
+          <h4>Resources</h4>
+          <a href="https://www.fifa.com" target="_blank">Official FIFA Site</a>
+          <a href="https://www.youtube.com/@fifatv" target="_blank">FIFA YouTube</a>
+          <a href="#about">About Project</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 FIFA World Cup Live Hub — College Case Study Project</p>
+        <p>Built with ❤️ using HTML, CSS &amp; JavaScript</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Load the JavaScript file -->
+  <script src="script.js"></script>
+
+  <!-- Auth state: update navbar button based on login status -->
+  <script>
+    (function () {
+      const authBtn = document.getElementById("authBtn");
+      if (!authBtn) return;
+
+      const loggedIn = localStorage.getItem("wc_logged_in") === "true";
+      const userName = localStorage.getItem("wc_user_name") || "";
+
+      if (loggedIn) {
+        // Show greeting + logout option
+        authBtn.textContent = "👋 " + (userName ? userName.split(" ")[0] : "Fan") + " · Logout";
+        authBtn.href = "#";
+        authBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          localStorage.removeItem("wc_logged_in");
+          localStorage.removeItem("wc_user_name");
+          localStorage.removeItem("wc_user_email");
+          window.location.reload();
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

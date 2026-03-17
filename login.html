@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login / Sign Up — FIFA World Cup 2026 Fan Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+/* ════════════════════════════════════════════════
+   FIFA WC 2026 — LOGIN / SIGNUP PAGE STYLES
+   Self-contained (no external style.css needed)
+════════════════════════════════════════════════ */
+:root {
+  --g1: #051405;
+  --g2: #0b1f0b;
+  --g3: #122012;
+  --green: #39ff14;
+  --green2: #16711e;
+  --gold: #ffd700;
+  --red: #ff3131;
+  --white: #ffffff;
+  --muted: #6b8f6b;
+  --card: #0f1c0f;
+  --border: #1a2e1a;
+  --font-d: 'Bebas Neue', sans-serif;
+  --font-c: 'Barlow Condensed', sans-serif;
+  --font-b: 'Barlow', sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-b);background:var(--g1);color:var(--white);min-height:100vh;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+
+/* ── TOP BAR ── */
+.top-bar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.8rem 2rem;
+  background:rgba(5,20,5,.9);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(57,255,20,.15);
+}
+.tb-logo{display:flex;align-items:center;gap:.5rem;font-family:var(--font-d);font-size:1.4rem;letter-spacing:2px}
+.tb-logo span{font-size:1.6rem}
+.tb-back{display:flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--muted);transition:color .2s}
+.tb-back:hover{color:var(--green)}
+
+/* ── LAYOUT ── */
+.auth-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+
+/* ── LEFT PANEL ── */
+.auth-left{
+  position:relative;overflow:hidden;
+  background:url('https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1400&q=90') center/cover no-repeat;
+}
+.al-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(140deg,rgba(5,20,5,.85) 0%,rgba(10,50,10,.65) 100%);
+}
+.al-pattern{
+  position:absolute;inset:0;
+  background-image:
+    radial-gradient(circle at 50% 50%,transparent 15%,rgba(255,255,255,.035) 15.5%,transparent 16%),
+    linear-gradient(transparent 49.5%,rgba(255,255,255,.05) 49.5%,rgba(255,255,255,.05) 50.5%,transparent 50.5%);
+}
+.al-body{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;justify-content:center;
+  height:100%;padding:5rem 3rem;
+}
+.al-badge{
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-family:var(--font-c);font-size:.72rem;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;
+  color:var(--green);background:rgba(57,255,20,.1);
+  border:1px solid rgba(57,255,20,.3);
+  padding:.3rem 1rem;border-radius:20px;margin-bottom:1.5rem;width:fit-content;
+}
+.al-title{
+  font-family:var(--font-d);
+  font-size:clamp(2.5rem,5vw,4.8rem);
+  line-height:1;letter-spacing:3px;margin-bottom:1.2rem;
+}
+.al-title em{color:var(--green);text-shadow:0 0 30px rgba(57,255,20,.5);font-style:normal}
+.al-desc{font-size:.95rem;color:rgba(255,255,255,.7);line-height:1.8;max-width:380px;margin-bottom:2rem}
+.al-perks{display:flex;flex-direction:column;gap:.9rem;margin-bottom:2.5rem}
+.perk{display:flex;align-items:center;gap:.8rem;font-size:.88rem;color:rgba(255,255,255,.8)}
+.perk-icon{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:rgba(57,255,20,.12);border:1px solid rgba(57,255,20,.3);
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;
+}
+.al-stats{
+  display:flex;gap:2rem;padding-top:1.5rem;
+  border-top:1px solid rgba(255,255,255,.1);
+}
+.al-stat .num{display:block;font-family:var(--font-d);font-size:2.2rem;color:var(--green);letter-spacing:2px;line-height:1}
+.al-stat .lbl{font-family:var(--font-c);font-size:.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted)}
+
+/* ── RIGHT PANEL ── */
+.auth-right{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:5rem 2.5rem;background:var(--card);overflow-y:auto;
+}
+.auth-form-wrap{width:100%;max-width:420px}
+.form-title{font-family:var(--font-d);font-size:2.6rem;letter-spacing:3px;margin-bottom:.3rem}
+.form-sub{font-size:.88rem;color:var(--muted);margin-bottom:1.8rem}
+
+/* ── TAB SWITCHER ── */
+.tabs{
+  display:flex;background:rgba(255,255,255,.04);
+  border-radius:9px;padding:3px;margin-bottom:1.8rem;
+  border:1px solid var(--border);
+}
+.tab{
+  flex:1;padding:.65rem;text-align:center;
+  font-family:var(--font-c);font-size:.9rem;font-weight:600;
+  letter-spacing:1px;cursor:pointer;border-radius:6px;
+  transition:all .25s;color:var(--muted);border:none;background:none;
+}
+.tab.active{background:var(--green);color:#000}
+
+/* ── FORM PANELS ── */
+.panel{display:none}
+.panel.active{display:block}
+
+/* ── INPUT ── */
+.igroup{position:relative;margin-bottom:1.1rem}
+.igroup label{
+  display:block;font-family:var(--font-c);
+  font-size:.72rem;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:.35rem;
+}
+.irow{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.iwrap{position:relative}
+.iicon{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;pointer-events:none}
+.igroup input,
+.igroup select{
+  width:100%;padding:.82rem .9rem .82rem 2.6rem;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:8px;color:var(--white);
+  font-family:var(--font-b);font-size:.92rem;
+  transition:border-color .25s,box-shadow .25s;outline:none;
+}
+.igroup input:focus,
+.igroup select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(57,255,20,.1)}
+.igroup input::placeholder{color:rgba(255,255,255,.22)}
+.igroup select{-webkit-appearance:none;appearance:none;cursor:pointer}
+.igroup select option{background:var(--card)}
+.eye-btn{
+  position:absolute;right:.8rem;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;padding:.2rem;
+}
+.eye-btn:hover{color:var(--green)}
+
+/* ── STRENGTH BAR ── */
+.str-wrap{margin-top:.35rem}
+.str-track{height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.str-fill{height:100%;width:0;border-radius:2px;transition:width .4s,background .4s}
+.str-lbl{font-size:.68rem;color:var(--muted);margin-top:.25rem}
+
+/* ── CHECKBOX ── */
+.chk-group{display:flex;align-items:flex-start;gap:.6rem;margin-bottom:1.4rem;font-size:.8rem;color:var(--muted)}
+.chk-group input[type=checkbox]{width:15px;height:15px;margin-top:2px;accent-color:var(--green);cursor:pointer;flex-shrink:0}
+.chk-group a{color:var(--green)}
+
+/* ── FORGOT ── */
+.forgot{text-align:right;margin-top:-.7rem;margin-bottom:1.1rem}
+.forgot a{font-size:.75rem;color:var(--muted);transition:color .2s}
+.forgot a:hover{color:var(--green)}
+
+/* ── SUBMIT BTN ── */
+.sub-btn{
+  width:100%;padding:.92rem;
+  background:var(--green);color:#000;
+  border:none;border-radius:8px;
+  font-family:var(--font-c);font-size:1rem;font-weight:700;
+  letter-spacing:1.5px;cursor:pointer;
+  transition:all .3s;display:flex;align-items:center;justify-content:center;gap:.5rem;
+}
+.sub-btn:hover{background:#2dcc0f;transform:translateY(-2px);box-shadow:0 8px 25px rgba(57,255,20,.35)}
+.sub-btn:active{transform:translateY(0)}
+
+/* ── DIVIDER ── */
+.divider{display:flex;align-items:center;gap:.8rem;margin:1.4rem 0;font-size:.72rem;color:var(--muted)}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── SOCIAL BTNS ── */
+.socials{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1.4rem}
+.soc-btn{
+  display:flex;align-items:center;justify-content:center;gap:.45rem;
+  padding:.72rem;background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:8px;
+  color:var(--white);font-family:var(--font-b);font-size:.82rem;
+  cursor:pointer;transition:all .25s;
+}
+.soc-btn:hover{border-color:var(--green);background:rgba(57,255,20,.05)}
+
+/* ── SWITCH LINK ── */
+.switch-p{text-align:center;margin-top:1.4rem;font-size:.8rem;color:var(--muted)}
+.switch-p a{color:var(--green);font-weight:600}
+
+/* ── TOAST ── */
+.toast{
+  display:none;position:fixed;top:4.5rem;right:1.5rem;z-index:9999;
+  padding:.9rem 1.3rem;border-radius:10px;font-size:.88rem;font-weight:600;
+  min-width:250px;box-shadow:0 8px 30px rgba(0,0,0,.4);
+  animation:slide-in .4s ease;
+}
+.toast.ok{background:var(--green2);border:1px solid var(--green);color:#fff}
+.toast.err{background:#3d0808;border:1px solid var(--red);color:#fff}
+@keyframes slide-in{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .auth-wrap{grid-template-columns:1fr}
+  .auth-left{display:none}
+  .auth-right{padding:5rem 1.5rem 2rem}
+  .irow{grid-template-columns:1fr}
+  .socials{grid-template-columns:1fr}
+}
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<nav class="top-bar">
+  <a href="index.html" class="tb-logo"><span>🏆</span> FIFA WORLD CUP 2026</a>
+  <a href="index.html" class="tb-back"><i class="fa fa-arrow-left"></i> Back to Hub</a>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MAIN LAYOUT -->
+<div class="auth-wrap">
+
+  <!-- LEFT PANEL -->
+  <div class="auth-left">
+    <div class="al-overlay"></div>
+    <div class="al-pattern"></div>
+    <div class="al-body">
+      <span class="al-badge">🏆 FIFA WORLD CUP 2026</span>
+
+      <h1 class="al-title">
+        Join The<br/>
+        <em>World Cup</em><br/>
+        Experience
+      </h1>
+
+      <p class="al-desc">
+        Create your free account and get full access to live match tracking,
+        group standings, player stats, countdown timers and the official WC 2026 schedule.
+      </p>
+
+      <div class="al-perks">
+        <div class="perk"><div class="perk-icon">📅</div><span>Full 104-match schedule with live countdown timers</span></div>
+        <div class="perk"><div class="perk-icon">⭐</div><span>Track favourite teams and players across 48 nations</span></div>
+        <div class="perk"><div class="perk-icon">🏟️</div><span>Stadium guides for all 16 World Cup venues</span></div>
+        <div class="perk"><div class="perk-icon">📺</div><span>Direct links to official FIFA+ and broadcast streams</span></div>
+        <div class="perk"><div class="perk-icon">🗂️</div><span>Live group tables and knockout bracket tracker</span></div>
+      </div>
+
+      <div class="al-stats">
+        <div class="al-stat"><span class="num">48</span><span class="lbl">Teams</span></div>
+        <div class="al-stat"><span class="num">104</span><span class="lbl">Matches</span></div>
+        <div class="al-stat"><span class="num">16</span><span class="lbl">Stadiums</span></div>
+        <div class="al-stat"><span class="num">39</span><span class="lbl">Days</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+
+      <h2 class="form-title" id="formTitle">Welcome Back</h2>
+      <p class="form-sub" id="formSub">Sign in to your WC 2026 fan account</p>
+
+      <!-- TABS -->
+      <div class="tabs">
+        <button class="tab active" id="loginTab" onclick="switchTab('login')">Login</button>
+        <button class="tab" id="signupTab" onclick="switchTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- ══ LOGIN PANEL ══ -->
+      <div class="panel active" id="loginPanel">
+
+        <div class="socials">
+          <button class="soc-btn" onclick="socialAuth('Google')">
+            <i class="fab fa-google" style="color:#EA4335"></i> Google
+          </button>
+          <button class="soc-btn" onclick="socialAuth('Facebook')">
+            <i class="fab fa-facebook-f" style="color:#1877F2"></i> Facebook
+          </button>
+        </div>
+        <div class="divider">or sign in with email</div>
+
+        <div class="igroup">
+          <label>Email Address</label>
+          <div class="iwrap">
+            <i class="fa fa-envelope iicon"></i>
+            <input type="email" id="lEmail" placeholder="you@example.com" autocomplete="email"/>
+          </div>
+        </div>
+
+        <div class="igroup">
+          <label>Password</label>
+          <div class="iwrap">
+            <i class="fa fa-lock iicon"></i>
+            <input type="password" id="lPass" placeholder="Your password" autocomplete="current-password"/>
+            <button class="eye-btn" type="button" onclick="toggleEye('lPass',this)"><i class="fa fa-eye"></i></button>
+          </div>
+        </div>
+
+        <div class="forgot"><a href="#" onclick="toast('Password reset link sent! ✅','ok');return false">Forgot password?</a></div>
+
+        <button class="sub-btn" onclick="doLogin()">
+          <i class="fa fa-sign-in-alt"></i> Sign In
+        </button>
+
+        <p class="switch-p">No account? <a href="#" onclick="switchTab('signup');return false">Sign up free</a></p>
+      </div>
+
+      <!-- ══ SIGNUP PANEL ══ -->
+      <div class="panel" id="signupPanel">
+
+        <div class="socials">
+          <button class="soc-btn" onclick="socialAuth('Google')">
+            <i class="fab fa-google" style="color:#EA4335"></i> Google
+          </button>
+          <button class="soc-btn" onclick="socialAuth('Facebook')">
+            <i class="fab fa-facebook-f" style="color:#1877F2"></i> Facebook
+          </button>
+        </div>
+        <div class="divider">or register with email</div>
+
+        <div class="irow">
+          <div class="igroup">
+            <label>First Name</label>
+            <div class="iwrap">
+              <i class="fa fa-user iicon"></i>
+              <input type="text" id="sFirst" placeholder="John"/>
+            </div>
+          </div>
+          <div class="igroup">
+            <label>Last Name</label>
+            <div class="iwrap">
+              <i class="fa fa-user iicon"></i>
+              <input type="text" id="sLast" placeholder="Doe"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="igroup">
+          <label>Email Address</label>
+          <div class="iwrap">
+            <i class="fa fa-envelope iicon"></i>
+            <input type="email" id="sEmail" placeholder="you@example.com" autocomplete="email"/>
+          </div>
+        </div>
+
+        <div class="igroup">
+          <label>Favourite World Cup Team</label>
+          <div class="iwrap">
+            <i class="fa fa-futbol iicon"></i>
+            <select id="sTeam">
+              <option value="">Select your team...</option>
+              <option>🇪🇸 Spain</option><option>🇦🇷 Argentina</option>
+              <option>🇫🇷 France</option><option>🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+              <option>🇧🇷 Brazil</option><option>🇵🇹 Portugal</option>
+              <option>🇳🇱 Netherlands</option><option>🇲🇦 Morocco</option>
+              <option>🇧🇪 Belgium</option><option>🇩🇪 Germany</option>
+              <option>🇺🇸 USA</option><option>🇲🇽 Mexico</option>
+              <option>🇨🇦 Canada</option><option>🇯🇵 Japan</option>
+              <option>🇰🇷 South Korea</option><option>🇸🇳 Senegal</option>
+              <option>🇨🇴 Colombia</option><option>🇺🇾 Uruguay</option>
+              <option>🇨🇭 Switzerland</option><option>🇹🇷 Turkey</option>
+              <option>🇦🇹 Austria</option><option>🇮🇹 Italy</option>
+              <option>Other Team</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="igroup">
+          <label>Password</label>
+          <div class="iwrap">
+            <i class="fa fa-lock iicon"></i>
+            <input type="password" id="sPass" placeholder="Create a strong password"
+                   oninput="strengthCheck(this.value)" autocomplete="new-password"/>
+            <button class="eye-btn" type="button" onclick="toggleEye('sPass',this)"><i class="fa fa-eye"></i></button>
+          </div>
+          <div class="str-wrap">
+            <div class="str-track"><div class="str-fill" id="strFill"></div></div>
+            <div class="str-lbl" id="strLbl">Enter a password</div>
+          </div>
+        </div>
+
+        <div class="igroup">
+          <label>Confirm Password</label>
+          <div class="iwrap">
+            <i class="fa fa-lock iicon"></i>
+            <input type="password" id="sConf" placeholder="Repeat your password" autocomplete="new-password"/>
+            <button class="eye-btn" type="button" onclick="toggleEye('sConf',this)"><i class="fa fa-eye"></i></button>
+          </div>
+        </div>
+
+        <div class="chk-group">
+          <input type="checkbox" id="terms"/>
+          <label for="terms">
+            I agree to the <a href="#" onclick="return false">Terms of Service</a>
+            and <a href="#" onclick="return false">Privacy Policy</a>
+          </label>
+        </div>
+
+        <button class="sub-btn" onclick="doSignup()">
+          <i class="fa fa-user-plus"></i> Create My Account
+        </button>
+
+        <p class="switch-p">Already registered? <a href="#" onclick="switchTab('login');return false">Sign in</a></p>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   AUTH PAGE — JAVASCRIPT
+════════════════════════════════════════════ */
+
+// ── Tab switcher ──
+function switchTab(tab){
+  const loginTab=document.getElementById("loginTab"),
+        signupTab=document.getElementById("signupTab"),
+        loginPanel=document.getElementById("loginPanel"),
+        signupPanel=document.getElementById("signupPanel"),
+        title=document.getElementById("formTitle"),
+        sub=document.getElementById("formSub");
+
+  if(tab==="login"){
+    loginTab.classList.add("active"); signupTab.classList.remove("active");
+    loginPanel.classList.add("active"); signupPanel.classList.remove("active");
+    title.textContent="Welcome Back";
+    sub.textContent="Sign in to your WC 2026 fan account";
+  } else {
+    signupTab.classList.add("active"); loginTab.classList.remove("active");
+    signupPanel.classList.add("active"); loginPanel.classList.remove("active");
+    title.textContent="Create Account";
+    sub.textContent="Join millions of football fans worldwide";
+  }
+}
+
+// ── Toast notification ──
+function toast(msg, type){
+  const el=document.getElementById("toast");
+  el.textContent=(type==="ok"?"✅ ":"❌ ")+msg;
+  el.className="toast "+type;
+  el.style.display="block";
+  setTimeout(()=>el.style.display="none", 3500);
+}
+
+// ── Toggle password visibility ──
+function toggleEye(id, btn){
+  const inp=document.getElementById(id);
+  const ic=btn.querySelector("i");
+  if(inp.type==="password"){ inp.type="text"; ic.className="fa fa-eye-slash"; }
+  else { inp.type="password"; ic.className="fa fa-eye"; }
+}
+
+// ── Password strength checker ──
+function strengthCheck(pw){
+  const fill=document.getElementById("strFill"),
+        lbl=document.getElementById("strLbl");
+  let score=0;
+  if(pw.length>=8) score++;
+  if(/[A-Z]/.test(pw)) score++;
+  if(/[0-9]/.test(pw)) score++;
+  if(/[^A-Za-z0-9]/.test(pw)) score++;
+  const levels=[
+    {w:"0%",c:"transparent",t:"Enter a password"},
+    {w:"25%",c:"#ff3131",t:"Weak — too short"},
+    {w:"50%",c:"#ff9900",t:"Fair — add numbers"},
+    {w:"75%",c:"#ffd700",t:"Good — add symbols"},
+    {w:"100%",c:"#39ff14",t:"Strong ✓"}
+  ];
+  const l=pw.length===0?0:score;
+  fill.style.width=levels[l].w;
+  fill.style.background=levels[l].c;
+  lbl.textContent=levels[l].t;
+  lbl.style.color=levels[l].c;
+}
+
+// ── Email validation regex ──
+const emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// ── Login handler ──
+function doLogin(){
+  const email=document.getElementById("lEmail").value.trim();
+  const pass=document.getElementById("lPass").value;
+  if(!email||!pass){ toast("Please fill in all fields.","err"); return; }
+  if(!emailRe.test(email)){ toast("Enter a valid email address.","err"); return; }
+  if(pass.length<6){ toast("Password must be at least 6 characters.","err"); return; }
+  // Save session and redirect
+  localStorage.setItem("wc_logged_in","true");
+  localStorage.setItem("wc_user_email",email);
+  toast("Signed in successfully! Redirecting...","ok");
+  setTimeout(()=>window.location.href="index.html", 1500);
+}
+
+// ── Signup handler ──
+function doSignup(){
+  const first=document.getElementById("sFirst").value.trim();
+  const last=document.getElementById("sLast").value.trim();
+  const email=document.getElementById("sEmail").value.trim();
+  const pass=document.getElementById("sPass").value;
+  const conf=document.getElementById("sConf").value;
+  const terms=document.getElementById("terms").checked;
+
+  if(!first||!last||!email||!pass||!conf){ toast("Please fill in all fields.","err"); return; }
+  if(!emailRe.test(email)){ toast("Enter a valid email address.","err"); return; }
+  if(pass.length<8){ toast("Password must be at least 8 characters.","err"); return; }
+  if(pass!==conf){ toast("Passwords do not match.","err"); return; }
+  if(!terms){ toast("Please accept the Terms of Service.","err"); return; }
+
+  localStorage.setItem("wc_logged_in","true");
+  localStorage.setItem("wc_user_name",first+" "+last);
+  localStorage.setItem("wc_user_email",email);
+  toast("Account created! Welcome to WC 2026 Hub 🎉","ok");
+  setTimeout(()=>window.location.href="index.html", 1800);
+}
+
+// ── Social auth (demo) ──
+function socialAuth(provider){
+  toast("Connecting to "+provider+"...","ok");
+  setTimeout(()=>{
+    localStorage.setItem("wc_logged_in","true");
+    localStorage.setItem("wc_user_email",provider.toLowerCase()+"@demo.com");
+    window.location.href="index.html";
+  }, 1500);
+}
+
+// Redirect if already logged in
+// if(localStorage.getItem("wc_logged_in")==="true") window.location.href="index.html";
+</script>
+</body>
+</html>
